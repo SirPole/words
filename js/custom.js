@@ -2,29 +2,6 @@ $.ajaxSetup({
 	cache: false //DEBUG, remove me!
 });
 
-function matchHeight() {
-	$(".row:not(.noMatch)").each(function (i, e) {
-		var maxHeight = -1;
-		$(e).find("div[class^=col-]").each(function (j, f) {
-			if ($(f).height() > maxHeight) {
-				maxHeight = $(f).height();
-			}
-		});
-		$(e).find("div[class^=col-]").height(maxHeight);
-	});
-}
-function scrollWin(el, time, editPos) {
-	if (el.length) {
-		var time = time ? time : 500,
-			finalPos = $(el).offset().top;
-		if (editPos) finalPos += editPos;
-
-		$('body, html').animate({
-			scrollTop: finalPos
-		}, time);
-	}
-}
-
 var quotes = [
 	//Tyson
 	"The good thing about science is that it's true whether or not you believe in it.",
@@ -57,28 +34,31 @@ var quotes = [
 
 $('#quote').html(quotes[Math.floor(Math.random() * (quotes.length - 1))]);
 
-var isNotifiable = false;
-if (window.Notification) {
-	if (window.Notification.permission == "granted") {
-		isNotifiable = true;
-	} else {
-		window.Notification.requestPermission(function () {
-			if (window.Notification.permission == "granted") {
-				isNotifiable = true;
-			}
-		});
+function guid() {
+	function s4() {
+		return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 	}
+	return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }
 
-function showNotification(title, isNotifiable) {
-	if(isNotifiable) {
-		if(navigator.userAgent.indexOf('Android') >= 0) {
-			navigator.serviceWorker.register('');
-			navigator.serviceWorker.ready.then(function(registration) {
-				registration.showNotification('Notification with ServiceWorker');
+function notify(title, body, isNotifiable) {
+	if (isNotifiable) {
+		var icon = 'app192.png';
+		var tag = 'tag';
+		if (navigator.userAgent.indexOf('Android') >= 0) {
+			navigator.serviceWorker.ready.then(function (reg) {
+				reg.showNotification(title, {
+					body: body,
+					icon: icon,
+					tag: tag
+				});
 			});
 		} else {
-			new Notification(title);
+			new Notification(title, {
+				body: body,
+				icon: icon,
+				tag: tag
+			});
 		}
 	}
 }
@@ -105,16 +85,17 @@ function update() {
 	}).done(function (response) {
 		loadData(JSON.parse(response));
 	});
-	if(!window.updates) {
+	if (!window.updates) {
 		window.updates = window.setInterval(update, 5000);
 	}
 }
-update();
 
 function loadData(response) {
 	$('.alert').remove();
 	if ($('#words').html() != response.data) {
-		showNotification('Nové slovo!', isNotifiable);
+		if ($('#words').html() != '') {
+			notify('Nové slovo!', response.lastWord, isNotifiable);
+		}
 		$('#words').html(response.data);
 		$('#lastChar').html(response.lastChar);
 	}
@@ -127,3 +108,182 @@ function loadData(response) {
 	}
 	$('#author').val($('#author option[value=' + $('#words .word').last().attr('title') + ']').siblings('option').val()).change();
 }
+
+var guid1 = guid();
+$(window).on('load', function () {
+	$('#guid').val(guid1);
+	update();
+});
+
+'use strict';
+
+var isNotifiable = false;
+if (window.Notification) {
+	if (window.Notification.permission == "granted") {
+		isNotifiable = true;
+	} else {
+		window.Notification.requestPermission(function () {
+			if (window.Notification.permission == "granted") {
+				isNotifiable = true;
+			}
+		});
+	}
+}
+
+var API_KEY = "AIzaSyA9ZT8fiaMtd2SvSnYlsilFGfLCnbxU3PM";
+var isPushEnabled = false;
+
+function subscribe() {
+	// Disable the button so it can't be changed while
+	// we process the permission request
+	var pushButton = document.querySelector('.js-push-button');
+	pushButton.disabled = true;
+
+	navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
+		serviceWorkerRegistration.pushManager.subscribe({userVisibleOnly: true})
+			.then(function (subscription) {
+				// The subscription was successful
+				isPushEnabled = true;
+				pushButton.textContent = 'Disable Push Messages';
+				pushButton.disabled = false;
+
+				// TODO: Send the subscription.endpoint to your server
+				// and save it to send a push message at a later date
+				return sendSubscriptionToServer(subscription);
+			})
+			.catch(function (e) {
+				if (Notification.permission === 'denied') {
+					// The user denied the notification permission which
+					// means we failed to subscribe and the user will need
+					// to manually change the notification permission to
+					// subscribe to push messages
+					console.warn('Permission for Notifications was denied');
+					pushButton.disabled = true;
+				} else {
+					// A problem occurred with the subscription; common reasons
+					// include network errors, and lacking gcm_sender_id and/or
+					// gcm_user_visible_only in the manifest.
+					console.error('Unable to subscribe to push.', e);
+					pushButton.disabled = false;
+					pushButton.textContent = 'Enable Push Messages';
+				}
+			});
+	});
+}
+
+function unsubscribe() {
+	var pushButton = document.querySelector('.js-push-button');
+	pushButton.disabled = true;
+
+	navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
+		// To unsubscribe from push messaging, you need get the
+		// subscription object, which you can call unsubscribe() on.
+		serviceWorkerRegistration.pushManager.getSubscription().then(
+			function (pushSubscription) {
+				// Check we have a subscription to unsubscribe
+				if (!pushSubscription) {
+					// No subscription object, so set the state
+					// to allow the user to subscribe to push
+					isPushEnabled = false;
+					pushButton.disabled = false;
+					pushButton.textContent = 'Enable Push Messages';
+					return;
+				}
+
+				var subscriptionId = pushSubscription.subscriptionId;
+				// TODO: Make a request to your server to remove
+				// the subscriptionId from your data store so you
+				// don't attempt to send them push messages anymore
+
+				// We have a subscription, so call unsubscribe on it
+				pushSubscription.unsubscribe().then(function (successful) {
+					pushButton.disabled = false;
+					pushButton.textContent = 'Enable Push Messages';
+					isPushEnabled = false;
+				}).catch(function (e) {
+					// We failed to unsubscribe, this can lead to
+					// an unusual state, so may be best to remove
+					// the users data from your data store and
+					// inform the user that you have done so
+
+					console.log('Unsubscription error: ', e);
+					pushButton.disabled = false;
+					pushButton.textContent = 'Enable Push Messages';
+				});
+			}).catch(function (e) {
+			console.error('Error thrown while unsubscribing from push messaging.', e);
+		});
+	});
+}
+
+// Once the service worker is registered set the initial state
+function initialiseState() {
+	// Are Notifications supported in the service worker?
+	if (!('notify' in ServiceWorkerRegistration.prototype)) {
+		console.warn('Notifications aren\'t supported.');
+		return;
+	}
+
+	// Check the current Notification permission.
+	// If its denied, it's a permanent block until the
+	// user changes the permission
+	if (Notification.permission === 'denied') {
+		console.warn('The user has blocked notifications.');
+		return;
+	}
+
+	// Check if push messaging is supported
+	if (!('PushManager' in window)) {
+		console.warn('Push messaging isn\'t supported.');
+		return;
+	}
+
+	// We need the service worker registration to check for a subscription
+	navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
+		// Do we already have a push message subscription?
+		serviceWorkerRegistration.pushManager.getSubscription()
+			.then(function (subscription) {
+				// Enable any UI which subscribes / unsubscribes from
+				// push messages.
+				var pushButton = document.querySelector('.js-push-button');
+				pushButton.disabled = false;
+
+				if (!subscription) {
+					// We aren't subscribed to push, so set UI
+					// to allow the user to enable push
+					return;
+				}
+
+				// Keep your server in sync with the latest subscriptionId
+				sendSubscriptionToServer(subscription);
+
+				// Set your UI to show they have subscribed for
+				// push messages
+				pushButton.textContent = 'Disable Push Messages';
+				isPushEnabled = true;
+			})
+			.catch(function (err) {
+				console.warn('Error during getSubscription()', err);
+			});
+	});
+}
+
+window.addEventListener('load', function () {
+	var pushButton = document.querySelector('.js-push-button');
+	pushButton.addEventListener('click', function () {
+		if (isPushEnabled) {
+			unsubscribe();
+		} else {
+			subscribe();
+		}
+	});
+
+	// Check that service workers are supported, if so, progressively
+	// enhance and add push messaging support, otherwise continue without it.
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker.register('/sw.js')
+			.then(initialiseState);
+	} else {
+		console.log('Service workers aren\'t supported in this browser.');
+	}
+});

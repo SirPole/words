@@ -1,10 +1,11 @@
 <?php
 
 
+$guid = !empty($_POST['guid']) ? htmlspecialchars($_POST['guid']) : NULL;
 $action = !empty($_POST['action']) ? htmlspecialchars($_POST['action']) : NULL;
 $author = !empty($_POST['author']) ? htmlspecialchars($_POST['author']) : NULL;
 $word = !empty($_POST['word']) ? htmlspecialchars($_POST['word']) : NULL;
-$a = new Action($action, $author, $word);
+$a = new Action($guid, $action, $author, $word);
 $out = [];
 
 switch ($action) {
@@ -22,17 +23,20 @@ switch ($action) {
 		break;
 }
 $out['data'] = $a->reload();
+$out['lastWord'] = $a->lastWord();
 $out['lastChar'] = $a->lastChar();
+$out['guid'] = $a->getGuid();
 echo json_encode($out);
 
 class Action
 {
-	private $db, $action, $author, $word;
+	private $db, $guid, $action, $author, $word;
 
-	function __construct($action = NULL, $author = NULL, $word = NULL)
+	function __construct($guid = NULL, $action = NULL, $author = NULL, $word = NULL)
 	{
 		$this->db = new mysqli('localhost', 'root', '', 'words');
 		$this->db->set_charset("utf8");
+		$this->guid = $guid;
 		$this->action = $action;
 		$this->author = $author;
 		$this->word = strtolower($this->utf82ascii($word));
@@ -86,6 +90,26 @@ class Action
 			$out = substr($row['word'], strlen($row['word']) - 1);
 		}
 		return $out;
+	}
+
+	public function lastWord()
+	{
+		$sql = "SELECT * FROM `words` ORDER BY `id` DESC LIMIT 1";
+		$result = $this->db->query($sql);
+		$out = '';
+		while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+			if($row['author'] === "Verča") {
+				$hrat = " zahrála ";
+			} else {
+				$hrat = " zahrál ";
+			}
+			$out = $row['author'] . $hrat . '"' . $row['word'] . '".';
+		}
+		return $out;
+	}
+
+	public function getGuid() {
+		return $this->guid;
 	}
 
 	public function utf82ascii($text)
