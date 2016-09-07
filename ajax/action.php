@@ -1,10 +1,10 @@
 <?php
 
 
-$guid = !empty($_POST['guid']) ? htmlspecialchars($_POST['guid']) : NULL;
-$action = !empty($_POST['action']) ? htmlspecialchars($_POST['action']) : NULL;
-$author = !empty($_POST['author']) ? htmlspecialchars($_POST['author']) : NULL;
-$word = !empty($_POST['word']) ? htmlspecialchars($_POST['word']) : NULL;
+$guid = !empty($_POST['guid']) ? trim(htmlspecialchars($_POST['guid'])) : NULL;
+$action = !empty($_POST['action']) ? trim(htmlspecialchars($_POST['action'])) : NULL;
+$author = !empty($_POST['author']) ? trim(htmlspecialchars($_POST['author'])) : NULL;
+$word = !empty($_POST['word']) ? trim(htmlspecialchars($_POST['word'])) : NULL;
 $a = new Action($guid, $action, $author, $word);
 $out = [];
 
