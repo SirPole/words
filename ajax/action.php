@@ -34,7 +34,7 @@ class Action
 
 	function __construct($guid = NULL, $action = NULL, $author = NULL, $word = NULL)
 	{
-		$this->db = new mysqli('localhost', 'root', '', 'words');
+		$this->db = new mysqli('localhost', 'sirpole', 'polpol', 'words');
 		$this->db->set_charset("utf8");
 		$this->guid = $guid;
 		$this->action = $action;
