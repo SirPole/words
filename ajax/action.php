@@ -57,7 +57,8 @@ class Action
 	public function add()
 	{
 		$sql = "INSERT INTO `words` (author, word) VALUES ('$this->author', '$this->word')";
-		if (substr($this->word, 0, 1) == $this->lastChar()) {
+		$lastChar = $this->lastChar();
+		if (substr($this->word, 0, strlen($lastChar)) == $lastChar) {
 			$this->db->query($sql);
 			return FALSE;
 		}
@@ -87,7 +88,10 @@ class Action
 		$result = $this->db->query($sql);
 		$out = '';
 		while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-			$out = substr($row['word'], strlen($row['word']) - 1);
+			$out = substr($row['word'], strlen($row['word']) - 2);
+			if($out !== 'ch') {
+				$out = substr($row['word'], strlen($row['word']) - 1);
+			}
 		}
 		return $out;
 	}
