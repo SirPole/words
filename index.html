@@ -11,12 +11,13 @@
 
 	<link rel="manifest" href="manifest.json">
 
-	<link href="css/bootstrap.min.css" rel="stylesheet">
-	<link href="css/tether.min.css" rel="stylesheet">
-	<link href="css/tether-theme-basic.min.css" rel="stylesheet">
-	<link href="css/tether-theme-arrows.min.css" rel="stylesheet">
-	<link href="css/tether-theme-arrows-dark.min.css" rel="stylesheet">
-	<link href="css/custom.css" rel="stylesheet">
+	<script>
+      // @formatter:off
+      function loadFonts(e){var t=!window.addEventListener||navigator.userAgent.match(/(Android (2|3|4.0|4.1|4.2|4.3))|(Opera (Mini|Mobi))/)&&!navigator.userAgent.match(/Chrome/);if(!t){var n=document.createElement("style");n.rel="stylesheet",document.head.appendChild(n);var a=new XMLHttpRequest;a.open("HEAD",e,!0),a.onload=function(){var t={};try{t=localStorage}catch(o){}var s="ANTfonts__",d=s+"url",r=s+"css",i=s+"ts",c=""+new Date(a.getResponseHeader("Last-Modified")).getTime();if(t[r]&&t[d]===e&&t[i]===c&&window.location.search.indexOf("reloadFonts=1")<0)n.textContent=t[r];else{var l=new XMLHttpRequest;l.open("GET",e,!0),l.onload=function(){l.status>=200&&l.status<400&&(t[d]=e,t[r]=n.textContent=l.responseText,t[i]=new Date(l.getResponseHeader("Last-Modified")).getTime())},l.send()}},a.send()}}
+      // @formatter:on
+      loadFonts('dist/fonts/woff2.css')
+	</script>
+	<link href="dist/css/styles.css" rel="stylesheet">
 </head>
 <body>
 
@@ -25,12 +26,17 @@
 		<div class="row">
 			<div class="col-md-6 col-sm-6 col-xs-12">
 				<h3>Slova</h3>
-				<div id="words"></div>
+				<div id="words" class="row"></div>
 			</div>
 			<div class="col-md-6 col-sm-6 col-xs-12">
 				<h3>Nové slovo</h3>
 				<form action="index.html" method="POST" id="newWord" class="form">
-					<p class="intro">Poslední slovo končí na <span id="lastChar"></span></p>
+					<div class="col-md-8 col-sm-8 col-xs-6">
+						<p class="intro">Poslední slovo končí na <span id="lastChar"></span></p>
+					</div>
+					<div class="col-md-4 col-sm-4 col-xs-6">
+						<p class="intro">Počet slov: <span id="wordCount"></span></p>
+					</div>
 					<input name="action" id="action" type="hidden" value="">
 					<input name="guid" id="guid" type="hidden" value="">
 					<div class="row">
@@ -67,9 +73,8 @@
 	</div>
 </div>
 
-<script src="js/jquery-1.12.4.min.js" type="text/javascript"></script>
-<script src="js/tether.min.js" type="text/javascript"></script>
-<script async src="js/bootstrap.min.js" type="text/javascript"></script>
-<script async defer src="js/custom.js" type="text/javascript"></script>
+<script src="js/jquery.js" type="text/javascript"></script>
+<script src="js/tether.js" type="text/javascript"></script>
+<script async defer src="dist/js/scripts.min.js" type="text/javascript"></script>
 </body>
 </html>
