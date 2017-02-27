@@ -1,0 +1,8 @@
+fonts:
+    - #Here starts font declaration
+        family:	Lora
+        variants:
+            - 400
+            - 700
+        subsets:
+            - latin-ext
