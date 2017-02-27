@@ -38,7 +38,6 @@ gulp.task('sass', () => {
 })
 
 gulp.task('css', [ 'sass' ], () => {
-  math
   return gulp.src(settings.files.css)
              .pipe(watchErrors())
              .pipe($.sourcemaps.init({
@@ -93,7 +92,7 @@ gulp.task('fonts', () => {
 
 gulp.task('browserSync', [ 'default' ], () => {
   browserSync.init({
-    proxy : 'ihavemyplaceinspace.mab.loc/'
+    proxy : 'http://words.mab.loc/'
   })
   gulp.watch(settings.files.sass, [ 'css' ])
 })
