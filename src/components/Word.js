@@ -1,10 +1,18 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 
 class Word extends React.Component {
+  static propTypes = {
+    data : PropTypes.object
+  }
+
   render () {
-    const { id, author, word } = this.props.data
+    const { id, author, word, invalidWord } = this.props.data
+    let className                           = 'word'
+    if (id === invalidWord) {
+      className += ' invalid'
+    }
     return (
-      <span className="word" id={id} title={author}>
+      <span className={className} id={id} title={author}>
         {word}
       </span>
     )
