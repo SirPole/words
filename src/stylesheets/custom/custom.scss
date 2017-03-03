@@ -4,6 +4,11 @@
   transition: all 200ms ease-in-out;
 }
 
+::selection {
+  background: transparent;
+  color: $card-bg;
+}
+
 html, body {
   overflow-x: hidden;
   font-family: 'Lora', serif;
