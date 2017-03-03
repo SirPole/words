@@ -63,7 +63,7 @@ a {
     padding-left: 0;
     padding-right: 0;
     border-radius: 2px;
-    margin-top: 30px;
+    margin-top: 15px;
     @include transAll;
   }
   input,
@@ -174,4 +174,29 @@ a {
 
 .hidden {
   display: none;
+}
+
+.btn-outline {
+  background: transparent;
+  line-height: 24px;
+  &.btn-primary {
+    color: $brand-primary;
+  }
+  &.btn-success {
+    color: $brand-success;
+  }
+  &.btn-danger {
+    color: $brand-danger;
+  }
+  &:hover,
+  &:focus,
+  &:active,
+  &.active {
+    color: #fff;
+  }
+}
+
+.intro {
+  margin-bottom: 15px;
+  line-height: 1;
 }
