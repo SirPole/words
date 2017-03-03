@@ -86,10 +86,6 @@ a {
   }
 }
 
-.alert {
-  margin: 15px 0;
-}
-
 #words {
   display: flex;
   flex-wrap: wrap;
@@ -199,4 +195,30 @@ a {
 .intro {
   margin-bottom: 15px;
   line-height: 1;
+}
+
+.alert {
+  width: auto;
+  max-width: 100%;
+  position: fixed;
+  margin: 0;
+  bottom: 0;
+  left: 50%;
+  border-radius: 0;
+  transform: translate(-50%, -10%);
+  transition: transform 0.3s ease-in-out;
+  &.down {
+    transform: translate(-50%, 100%);
+  }
+  .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 15px;
+    line-height: 20px;
+    display: block;
+    width: 20px;
+    height: 20px;
+    outline: none;
+  }
 }
