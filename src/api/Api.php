@@ -6,7 +6,7 @@ class Api
 
 	function __construct($action = NULL, $author = NULL, $word = NULL)
 	{
-		$this->db = new mysqli('localhost', 'sirpole', 'polpol', 'words');
+		$this->db = new mysqli('brychta.name', 'sirpole', 'polpol', 'words');
 		$this->db->set_charset("utf8");
 		$this->action = $action;
 		$this->author = $author;
@@ -15,13 +15,13 @@ class Api
 
 	public function check()
 	{
-		$sql = "SELECT * FROM `words` WHERE word='$this->word'";
+		$sql = "SELECT `id` FROM `words` WHERE word='$this->word'";
 		$result = $this->db->query($sql);
 		if ($result->num_rows === 0) {
-			return FALSE;
+			return 0;
 		} else {
 			$row = $result->fetch_array(MYSQLI_ASSOC);
-			return 'w' . $row['id'];
+			return (int)$row['id'];
 		}
 	}
 
@@ -31,9 +31,9 @@ class Api
 		$lastChar = $this->lastChar();
 		if (substr($this->word, 0, strlen($lastChar)) == $lastChar) {
 			$this->db->query($sql);
-			return FALSE;
+			return 0;
 		}
-		return TRUE;
+		return -1;
 	}
 
 	public function remove()
@@ -46,9 +46,9 @@ class Api
 	{
 		$sql = "SELECT * FROM `words`";
 		$result = $this->db->query($sql);
-		$out = '';
+		$out = [];
 		while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-			$out .= '<span class="word" id="w' . $row['id'] . '" title="' . $row['author'] . '">' . $row['word'] . '</span>';
+			$out[] = ['id' => $row['id'], 'author' => $row['author'], 'word' => $row['word']];
 		}
 		return $out;
 	}
