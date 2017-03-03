@@ -19,27 +19,29 @@ class Api
 		$result = $this->db->query($sql);
 		if ($result->num_rows === 0) {
 			return 0;
-		} else {
-			$row = $result->fetch_array(MYSQLI_ASSOC);
-			return (int)$row['id'];
 		}
+		return -(int)$result->fetch_array(MYSQLI_ASSOC)['id'];
 	}
 
 	public function add()
 	{
-		$sql = "INSERT INTO `words` (author, word) VALUES ('$this->author', '$this->word')";
+		$sql = "INSERT INTO `words` (author, word) VALUES ('$this->author', '$this->word'); SELECT `id` FROM `words` ORDER BY `id` DESC LIMIT 1";
 		$lastChar = $this->lastChar();
 		if (substr($this->word, 0, strlen($lastChar)) == $lastChar) {
-			$this->db->query($sql);
-			return 0;
+			$result = $this->db->query($sql);
+			return $result->fetch_array(MYSQLI_ASSOC)['id'];
 		}
-		return -1;
+		return 0;
 	}
 
 	public function remove()
 	{
 		$sql = "DELETE FROM `words` WHERE 1 ORDER BY id DESC LIMIT 1";
-		$this->db->query($sql);
+		$result = $this->db->query($sql);
+		if ($result) {
+			return 0;
+		}
+		return -1;
 	}
 
 	public function reload()
@@ -57,12 +59,10 @@ class Api
 	{
 		$sql = "SELECT `word` FROM `words` ORDER BY `id` DESC LIMIT 1";
 		$result = $this->db->query($sql);
-		$out = '';
-		while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-			$out = substr($row['word'], strlen($row['word']) - 2);
-			if ($out !== 'ch') {
-				$out = substr($row['word'], strlen($row['word']) - 1);
-			}
+		$row = $result->fetch_array(MYSQLI_ASSOC);
+		$out = substr($row['word'], strlen($row['word']) - 2);
+		if ($out !== 'ch') {
+			$out = substr($row['word'], strlen($row['word']) - 1);
 		}
 		return $out;
 	}
@@ -71,16 +71,8 @@ class Api
 	{
 		$sql = "SELECT * FROM `words` ORDER BY `id` DESC LIMIT 1";
 		$result = $this->db->query($sql);
-		$out = '';
-		while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-			if ($row['author'] === "Verča") {
-				$hrat = " zahrála ";
-			} else {
-				$hrat = " zahrál ";
-			}
-			$out = $row['author'] . $hrat . '"' . $row['word'] . '".';
-		}
-		return $out;
+		$row = $result->fetch_array(MYSQLI_ASSOC);
+		return $row['author'] . ' played "' . $row['word'] . '"';
 	}
 
 	public function utf82ascii($text)

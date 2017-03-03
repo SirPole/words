@@ -1,6 +1,6 @@
 <?php
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Credentials', true);
+header('Access-Control-Allow-Credentials', TRUE);
 header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, Origin, User-Agent, DNT, Cache-Control, X-Mx-ReqToken, Keep-Alive, X-Requested-With, If-Modified-Since");
 
@@ -12,11 +12,7 @@ $word = !empty($_POST['word']) ? trim(htmlspecialchars($_POST['word'])) : NULL;
 $a = new Api($action, $author, $word);
 $out = [];
 $data = $a->reload();
-
 switch ($action) {
-	case 'init':
-		$out['data'] = json_encode($data);
-		break;
 	case 'add':
 		$out['err'] = $a->check();
 		if ($out['err'] === 0) {
@@ -24,10 +20,16 @@ switch ($action) {
 		}
 		break;
 	case 'remove':
-		$a->remove();
+		$out['err'] = $a->remove();
+		break;
+	case 'init':
+		$out['data'] = json_encode($data);
+		$out['lastWord'] = $a->lastWord();
+		$out['lastChar'] = $a->lastChar();
+	case 'update':
+	default:
+		$out['wordCount'] = count($data);
 		break;
 }
-$out['wordCount'] = count($data);
-$out['lastWord'] = $a->lastWord();
-$out['lastChar'] = $a->lastChar();
 echo json_encode($out);
+
