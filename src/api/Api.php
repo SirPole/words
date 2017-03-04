@@ -6,7 +6,8 @@ class Api
 
 	function __construct($action = NULL, $author = NULL, $word = NULL)
 	{
-		$this->db = new mysqli('brychta.name', 'sirpole', 'polpol', 'words');
+		$credentials = json_decode(file_get_contents('config.json'))->db;
+		$this->db = new mysqli($credentials->host, $credentials->user, $credentials->pass, $credentials->db);
 		$this->db->set_charset("utf8");
 		$this->action = $action;
 		$this->author = $author;
@@ -25,11 +26,12 @@ class Api
 
 	public function add()
 	{
-		$sql = "INSERT INTO `words` (author, word) VALUES ('$this->author', '$this->word'); SELECT `id` FROM `words` ORDER BY `id` DESC LIMIT 1";
+		$sql = "INSERT INTO `words` (author, word) VALUES ('$this->author', '$this->word')";
 		$lastChar = $this->lastChar();
 		if (substr($this->word, 0, strlen($lastChar)) == $lastChar) {
-			$result = $this->db->query($sql);
-			return $result->fetch_array(MYSQLI_ASSOC)['id'];
+			$this->db->query($sql);
+			$result = $this->db->query("SELECT `id` FROM `words` ORDER BY `id` DESC LIMIT 1");
+			return (int)$result->fetch_array(MYSQLI_ASSOC)['id'];
 		}
 		return 0;
 	}
