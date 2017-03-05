@@ -7,8 +7,15 @@ import { Router, Route, browserHistory } from 'react-router'
 import App from './components/App'
 import Auth from './components/Auth'
 
-function check () {
-
+const check = (next, replace, callback) => {
+  Auth.isLoggedIn(status => {
+    if (!status) {
+      replace('/auth')
+      callback()
+    } else {
+      callback()
+    }
+  })
 }
 
 const router = (

@@ -1,9 +1,49 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import LoginForm from './LoginForm'
+import axios from 'axios'
+
+const connection = {
+  method  : 'post',
+  url     : '//words.mab.loc/login.php',
+  headers : {
+    'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
+  }
+}
 
 class Auth extends React.Component {
-  login = (pass) => {
-    return false
+  static propTypes = {
+    'router' : PropTypes.object
+  }
+
+  static isLoggedIn = (cb) => {
+    axios({
+      ...connection,
+      data : `jwt=${localStorage.jwt}`
+    }).then(response => {
+      cb(response.data.authorized)
+    })
+  }
+
+  componentWillMount = () => this.check()
+
+  check = () => {
+    Auth.isLoggedIn(status => {
+      if (status) {
+        this.props.router.replace('/')
+      }
+    })
+  }
+
+  login = (pass, cb) => {
+    if (pass) {
+      return axios({
+        ...connection,
+        data : `pass=${pass}`
+      }).then(response => {
+        localStorage.jwt = response.data.jwt || undefined
+        cb(response.data.authorized)
+      })
+    }
   }
 
   render () {

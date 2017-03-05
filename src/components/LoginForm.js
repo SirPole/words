@@ -24,7 +24,7 @@ class LoginForm extends React.Component {
     e.preventDefault()
     this.setState({
       pass   : '',
-      failed : !this.props.login(this.state.pass)
+      failed : this.props.login(this.state.pass, status => !status)
     })
   }
 
