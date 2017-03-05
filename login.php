@@ -1,6 +1,11 @@
 <?php
-
 use Firebase\JWT\JWT;
+
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Credentials', TRUE);
+header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, Origin, User-Agent, DNT, Cache-Control, X-Mx-ReqToken, Keep-Alive, X-Requested-With, If-Modified-Since");
+
 
 require_once 'vendor/autoload.php';
 
@@ -26,7 +31,7 @@ if ($jwt) {
 		$data = [
 			'iat' => $ts,
 			'nbf' => $ts,
-			'iss' => $_SERVER['SERVER_ADDR'],
+			'iss' => 'words.brychta.name',
 		];
 		echo json_encode([
 			'authorized' => TRUE,
