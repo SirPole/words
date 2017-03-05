@@ -82,6 +82,9 @@ a {
     &:disabled {
       background: $bg;
     }
+    &[type='password'] {
+      text-align: center;
+    }
     &.failed {
       border-color: $brand-secondary;
       box-shadow: 0 0 10px $brand-secondary;
