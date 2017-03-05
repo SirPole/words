@@ -58,11 +58,6 @@ a {
   bottom: 15px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   border-radius: 2px;
-  .form-group {
-    float: left;
-    width: 90%;
-    margin: 0 5px 0 0;
-  }
   button {
     width: 100%;
     padding-left: 0;
@@ -71,8 +66,7 @@ a {
     margin-top: 15px;
     @include transAll;
   }
-  input,
-  select {
+  .form-control {
     height: 38px !important;
     background: $bg;
     border-color: $dark-bg;
@@ -87,6 +81,11 @@ a {
     }
     &:disabled {
       background: $bg;
+    }
+    &.failed {
+      border-color: $brand-secondary;
+      box-shadow: 0 0 10px $brand-secondary;
+      animation: shake 200ms linear 0s 2;
     }
   }
 }
@@ -227,4 +226,11 @@ a {
     height: 20px;
     outline: none;
   }
+}
+
+.centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

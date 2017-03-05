@@ -29,3 +29,15 @@ $content-bg: #303030;
 $card-bg: #424242;
 $color: #fff;
 // <<< DARK
+
+@keyframes shake {
+  0%, 50%, 100% {
+    transform: translateX(0)
+  }
+  25% {
+    transform: translateX(-10%)
+  }
+  75% {
+    transform: translateX(10%)
+  }
+}
