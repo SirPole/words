@@ -14,7 +14,7 @@ $config = json_decode(file_get_contents('config.json'));
 $pass = !empty($_POST['pass']) ? trim(htmlspecialchars($_POST['pass'])) : NULL;
 $jwt = !empty($_POST['jwt']) ? trim(htmlspecialchars($_POST['jwt'])) : NULL;
 
-if ($jwt) {
+if ($jwt && $jwt !== 'undefined') {
 	try {
 		$token = JWT::decode($jwt, $config->authKey, ['HS512']);
 		echo json_encode([
@@ -25,7 +25,7 @@ if ($jwt) {
 			'authorized' => FALSE,
 		]);
 	}
-} elseif ($pass) {
+} elseif ($pass && $pass !== 'undefined') {
 	if ($pass === $config->authPass) {
 		$ts = time();
 		$data = [
@@ -43,5 +43,7 @@ if ($jwt) {
 		]);
 	}
 } else {
-	header('HTTP/1.0 400 Bad Request');
+	echo json_encode([
+		'authorized' => FALSE,
+	]);
 }
