@@ -20,7 +20,7 @@ class LoginForm extends React.Component {
     })
   }
 
-  handleClick = (e) => {
+  handleSubmit = (e) => {
     e.preventDefault()
     this.setState({
       pass   : '',
@@ -35,10 +35,10 @@ class LoginForm extends React.Component {
       className += ' failed'
     }
     return (
-      <div className='form'>
+      <form className='form' onSubmit={this.handleSubmit}>
         <input id='pass' className={className} type='password' placeholder='password' value={pass} onChange={this.handleChange} />
-        <button className='btn btn-success btn-outline' id='loginButton' onClick={this.handleClick}>Log in</button>
-      </div>
+        <button type='submit' className='btn btn-success btn-outline' id='loginButton'>Log in</button>
+      </form>
     )
   }
 }
