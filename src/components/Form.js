@@ -51,7 +51,7 @@ class Form extends React.Component {
     const { word, author }                     = this.state
     const { lastChar, invalidChar, wordCount } = this.props
     return (
-      <div className='form'>
+      <form className='form' onSubmit={this.handleAdd}>
         <div className='row'>
           <div className='col-md-8 col-sm-8 col-xs-6'>
             <LastChar lastChar={lastChar} invalidChar={invalidChar} />
@@ -75,13 +75,13 @@ class Form extends React.Component {
 
         <div className='row'>
           <div className='col-sm-8 col-xs-12'>
-            <button className='btn btn-outline btn-success' id='add' onClick={this.handleAdd}>Odeslat</button>
+            <button type='submit' className='btn btn-outline btn-success' id='add'>Odeslat</button>
           </div>
           <div className='col-sm-4 col-xs-12'>
-            <button className='btn btn-outline btn-danger' id='remove' onClick={this.handleRemove}>Odebrat poslední</button>
+            <button type='button' className='btn btn-outline btn-danger' id='remove' onClick={this.handleRemove}>Odebrat poslední</button>
           </div>
         </div>
-      </div>
+      </form>
     )
   }
 }
