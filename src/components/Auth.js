@@ -41,6 +41,7 @@ class Auth extends React.Component {
         data : `pass=${pass}`
       }).then(response => {
         localStorage.jwt = response.data.jwt || undefined
+        this.props.router.replace('/')
         cb(response.data.authorized)
       })
     }
