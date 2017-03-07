@@ -2,14 +2,6 @@ import React, { PropTypes } from 'react'
 import LoginForm from './LoginForm'
 import axios from 'axios'
 
-const connection = {
-  url     : 'https://api.brychta.name',
-  headers : {
-    'Content-Type'  : 'application/x-www-form-urlencoded; charset=UTF-8',
-    'Authorization' : 'Bearer ' + localStorage.jwt
-  }
-}
-
 class Auth extends React.Component {
   static propTypes = {
     'router' : PropTypes.object
@@ -40,9 +32,13 @@ class Auth extends React.Component {
   login = (pass, cb) => {
     if (pass) {
       return axios({
-        ...connection,
-        method : 'post',
-        data   : `app=Words&pass=${pass}`
+        method  : 'post',
+        data    : `app=Words&pass=${pass}`,
+        url     : 'https://api.brychta.name',
+        headers : {
+          'Content-Type'  : 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization' : 'Bearer ' + localStorage.jwt
+        }
       }).then(response => {
         const { authorized, jwt } = response.data
         if (authorized) {

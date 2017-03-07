@@ -6,14 +6,6 @@ import Alert from './Alert'
 import Controls from './Controls'
 import axios from 'axios'
 
-const connection = {
-  url     : 'https://api.brychta.name',
-  headers : {
-    'Content-Type'  : 'application/x-www-form-urlencoded; charset=UTF-8',
-    'Authorization' : 'Bearer ' + localStorage.jwt
-  }
-}
-
 const initialState = {
   data        : [],
   lastChar    : '',
@@ -52,9 +44,11 @@ class App extends React.Component {
 
   init = () => {
     axios({
-      ...connection,
-      method : 'get',
-      url    : connection.url + '?what=data'
+      url     : 'https://api.brychta.name?what=data',
+      headers : {
+        'Content-Type'  : 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Authorization' : 'Bearer ' + localStorage.jwt
+      }
     }).then(response => {
       if (response.data.data) {
         response.data.data = JSON.parse(response.data.data)
@@ -65,8 +59,12 @@ class App extends React.Component {
 
   update = () => {
     axios({
-      ...connection,
-      method : 'get'
+      url     : 'https://api.brychta.name',
+      method  : 'get',
+      headers : {
+        'Content-Type'  : 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Authorization' : 'Bearer ' + localStorage.jwt
+      }
     }).then(response => {
       if (this.state.wordCount !== response.data.wordCount) {
         // TODO Sync button
@@ -96,9 +94,13 @@ class App extends React.Component {
 
   addItem = (word, author) => {
     axios({
-      ...connection,
-      method : 'post',
-      data   : `word=${word}&author=${author}`
+      url     : 'https://api.brychta.name',
+      method  : 'post',
+      data    : `word=${word}&author=${author}`,
+      headers : {
+        'Content-Type'  : 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Authorization' : 'Bearer ' + localStorage.jwt
+      }
     }).then(response => {
       if (response.data.err === 0) {
         this.setState({
@@ -135,8 +137,12 @@ class App extends React.Component {
 
   removeItem = () => {
     axios({
-      ...connection,
-      method : 'delete'
+      method  : 'delete',
+      url     : 'https://api.brychta.name',
+      headers : {
+        'Content-Type'  : 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Authorization' : 'Bearer ' + localStorage.jwt
+      }
     }).then(response => {
       if (response.err < 0) {
         this.init()
