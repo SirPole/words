@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import Words from './Words'
 import Form from './Form'
 import Quote from './Quote'
 import Alert from './Alert'
+import Controls from './Controls'
 import axios from 'axios'
 
 const connection = {
@@ -25,6 +26,10 @@ const initialState = {
 }
 
 class App extends React.Component {
+  static propTypes = {
+    router : PropTypes.object
+  }
+
   constructor () {
     super()
     if (localStorage.app) {
@@ -161,6 +166,11 @@ class App extends React.Component {
     })
   }
 
+  logout = () => {
+    localStorage.jwt = undefined
+    this.props.router.replace('/auth')
+  }
+
   render () {
     const { data, invalidWord, wordCount, lastChar, invalidChar, alertText, alertType } = this.state
     const nextAuthor                                                                    = data[ data.length - 2 ] ? data[ data.length - 2 ].author : ''
@@ -168,11 +178,11 @@ class App extends React.Component {
       <div id='app'>
         <div className='container'>
           <div className='row'>
-            <div className='col-sm-6 col-xs-12 left-side'>
+            <div className='col-md-6 col-xs-12 left-side'>
               <h2>Slova</h2>
               <Words data={data} invalidWord={invalidWord} />
             </div>
-            <div className='col-sm-6 col-xs-12 right-side'>
+            <div className='col-md-6 col-xs-12 right-side'>
               <h2>Nové slovo</h2>
               <Form wordCount={parseInt(wordCount)} lastChar={lastChar} invalidChar={invalidChar} nextAuthor={nextAuthor} addItem={this.addItem} removeItem={this.removeItem} />
               <button className='js-push-button btn btn-primary btn-outline hidden' disabled>Enable Push Messages</button>
@@ -181,6 +191,7 @@ class App extends React.Component {
         </div>
         <Quote />
         <Alert text={alertText} type={alertType} dismiss={this.dismissAlert} />
+        <Controls sync={this.init} logout={this.logout} />
       </div>
     )
   }

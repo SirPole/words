@@ -97,7 +97,9 @@ a {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin-bottom: 60px;
+  @media screen and (min-width: $screen-md) {
+    margin-bottom: 60px;
+  }
   &::after {
     content: '';
     flex: auto;
@@ -240,4 +242,19 @@ a {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.controls {
+  @media screen and (min-width: $screen-md) {
+    position: absolute;
+  }
+  top: 0;
+  right: 0;
+  margin: 10px;
+  text-align: center;
+  a {
+    display: inline-block;
+    margin: 5px;
+    cursor: pointer;
+  }
 }
