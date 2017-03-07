@@ -98,6 +98,10 @@ a {
   flex-wrap: wrap;
   justify-content: space-between;
   margin-bottom: 60px;
+  &::after {
+    content: '';
+    flex: auto;
+  }
   .word {
     position: relative;
     padding: 5px 15px;
