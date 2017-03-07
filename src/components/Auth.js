@@ -3,10 +3,10 @@ import LoginForm from './LoginForm'
 import axios from 'axios'
 
 const connection = {
-  method  : 'post',
-  url     : '//words.mab.loc/login.php',
+  url     : 'https://api.brychta.name',
   headers : {
-    'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
+    'Content-Type'  : 'application/x-www-form-urlencoded; charset=UTF-8',
+    'Authorization' : 'Bearer ' + localStorage.jwt
   }
 }
 
@@ -17,8 +17,11 @@ class Auth extends React.Component {
 
   static isLoggedIn = (cb) => {
     axios({
-      ...connection,
-      data : `jwt=${localStorage.jwt}`
+      url     : 'https://api.brychta.name?what=authorization',
+      method  : 'get',
+      headers : {
+        'Authorization' : 'Bearer ' + localStorage.jwt
+      }
     }).then(response => {
       cb(response.data.authorized)
     })
@@ -38,11 +41,15 @@ class Auth extends React.Component {
     if (pass) {
       return axios({
         ...connection,
-        data : `pass=${pass}`
+        method : 'post',
+        data   : `app=Words&pass=${pass}`
       }).then(response => {
-        localStorage.jwt = response.data.jwt || undefined
-        this.props.router.replace('/')
-        cb(response.data.authorized)
+        const { authorized, jwt } = response.data
+        if (authorized) {
+          localStorage.jwt = jwt
+          this.props.router.replace('/')
+        }
+        cb(authorized)
       })
     }
   }

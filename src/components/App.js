@@ -6,29 +6,36 @@ import Alert from './Alert'
 import axios from 'axios'
 
 const connection = {
-  method  : 'post',
-  url     : '//words.mab.loc/action.php',
+  url     : 'https://api.brychta.name',
   headers : {
-    'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
+    'Content-Type'  : 'application/x-www-form-urlencoded; charset=UTF-8',
+    'Authorization' : 'Bearer ' + localStorage.jwt
   }
+}
+
+const initialState = {
+  data        : [],
+  lastChar    : '',
+  lastWord    : '',
+  wordCount   : '',
+  invalidWord : 0,
+  invalidChar : false,
+  alertText   : '',
+  alertType   : ''
 }
 
 class App extends React.Component {
   constructor () {
     super()
     if (localStorage.app) {
-      this.state = JSON.parse(localStorage.app)
-    } else {
-      this.state = {
-        data        : [],
-        lastChar    : '',
-        lastWord    : '',
-        wordCount   : '',
-        invalidWord : 0,
-        invalidChar : false,
-        alertText   : '',
-        alertType   : ''
+      const app = JSON.parse(localStorage.app)
+      if (app.data && app.data.length) {
+        this.state = JSON.parse(localStorage.app)
+      } else {
+        this.state = initialState
       }
+    } else {
+      this.state = initialState
     }
   }
 
@@ -41,7 +48,8 @@ class App extends React.Component {
   init = () => {
     axios({
       ...connection,
-      data : 'action=init'
+      method : 'get',
+      url    : connection.url + '?what=data'
     }).then(response => {
       if (response.data.data) {
         response.data.data = JSON.parse(response.data.data)
@@ -51,8 +59,13 @@ class App extends React.Component {
   }
 
   update = () => {
-    axios(connection).then(response => {
+    axios({
+      ...connection,
+      method : 'get'
+    }).then(response => {
       if (this.state.wordCount !== response.data.wordCount) {
+        // TODO Sync button
+        // TODO Logout button
         // TODO Throw error
         // TODO download only new words
         this.init()
@@ -79,9 +92,9 @@ class App extends React.Component {
   addItem = (word, author) => {
     axios({
       ...connection,
-      data : `action=add&word=${word}&author=${author}`
+      method : 'post',
+      data   : `word=${word}&author=${author}`
     }).then(response => {
-      console.log(response)
       if (response.data.err === 0) {
         this.setState({
           invalidChar : true,
@@ -118,7 +131,7 @@ class App extends React.Component {
   removeItem = () => {
     axios({
       ...connection,
-      data : 'action=remove'
+      method : 'delete'
     }).then(response => {
       if (response.err < 0) {
         this.init()
