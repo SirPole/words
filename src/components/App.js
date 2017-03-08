@@ -46,7 +46,6 @@ class App extends React.Component {
     axios({
       url     : 'https://api.brychta.name?what=data',
       headers : {
-        'Content-Type'  : 'application/x-www-form-urlencoded; charset=UTF-8',
         'Authorization' : 'Bearer ' + localStorage.jwt
       }
     }).then(response => {
@@ -60,9 +59,7 @@ class App extends React.Component {
   update = () => {
     axios({
       url     : 'https://api.brychta.name',
-      method  : 'get',
       headers : {
-        'Content-Type'  : 'application/x-www-form-urlencoded; charset=UTF-8',
         'Authorization' : 'Bearer ' + localStorage.jwt
       }
     }).then(response => {
@@ -140,7 +137,6 @@ class App extends React.Component {
       method  : 'delete',
       url     : 'https://api.brychta.name',
       headers : {
-        'Content-Type'  : 'application/x-www-form-urlencoded; charset=UTF-8',
         'Authorization' : 'Bearer ' + localStorage.jwt
       }
     }).then(response => {
