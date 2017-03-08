@@ -10,7 +10,7 @@
 	<link rel="icon" type="image/png" href="favicon.png" />
 
 	<link rel="manifest" href="manifest.json">
-
+	<meta name="theme-color" content="#000000" />
 	<script>
       // @formatter:off
       function loadFonts(e){var t=!window.addEventListener||navigator.userAgent.match(/(Android (2|3|4.0|4.1|4.2|4.3))|(Opera (Mini|Mobi))/)&&!navigator.userAgent.match(/Chrome/);if(!t){var n=document.createElement("style");n.rel="stylesheet",document.head.appendChild(n);var a=new XMLHttpRequest;a.open("HEAD",e,!0),a.onload=function(){var t={};try{t=localStorage}catch(o){}var s="ANTfonts__",d=s+"url",r=s+"css",i=s+"ts",c=""+new Date(a.getResponseHeader("Last-Modified")).getTime();if(t[r]&&t[d]===e&&t[i]===c&&window.location.search.indexOf("reloadFonts=1")<0)n.textContent=t[r];else{var l=new XMLHttpRequest;l.open("GET",e,!0),l.onload=function(){l.status>=200&&l.status<400&&(t[d]=e,t[r]=n.textContent=l.responseText,t[i]=new Date(l.getResponseHeader("Last-Modified")).getTime())},l.send()}},a.send()}}
