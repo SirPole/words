@@ -58,6 +58,7 @@ class App extends React.Component {
       if (response.data.data) {
         response.data.data = JSON.parse(response.data.data)
       }
+      notify('New word!', response.data.lastWord)
       this.setState(response.data)
     })
   }
@@ -119,7 +120,6 @@ class App extends React.Component {
         })
       } else {
         const { data, wordCount } = this.state
-        notify('New word!', `${author} played "${word}"`)
         data.push({
           author : author,
           id     : response.data.err,
