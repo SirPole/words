@@ -21,12 +21,20 @@ this.addEventListener('install', function (event) {
     caches.open('Words-v1').then(function (cache) {
       cache.addAll([
         '/',
+        '/auth',
         '/build/assets/css/bundle.css',
         '/build/assets/fonts/woff2.css',
         '/src/js/jquery.min.js',
         '/src/js/tether.min.js',
         '/src/js/bootstrap.min.js',
-        '/build/bundle.js'
+        '/build/bundle.js',
+        '/favicon.png',
+        '/app192.png',
+        '/app144.png',
+        '/app96.png',
+        '/app48.png',
+        '/index.html',
+        '/manifest.json'
       ])
     })
   )
@@ -44,7 +52,9 @@ this.addEventListener('fetch', function (event) {
       }
       var responseToCache = response.clone()
       caches.open('Words-v1').then(function (cache) {
-        cache.put(event.request, responseToCache)
+        if (event.request.method !== 'HEAD') {
+          cache.put(event.request, responseToCache)
+        }
       })
       return response
     })

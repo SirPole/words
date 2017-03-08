@@ -16,12 +16,11 @@ const install = () => {
   }
   window.addEventListener('load', () => {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').then(init).catch(e => {
+      navigator.serviceWorker.register('sw.js').then(init).catch(e => {
         console.log('ServiceWorker registration failed: ', e)
       })
     }
     const button = document.querySelector('.js-push-button')
-    console.log(button)
     button.addEventListener('click', () => {
       if (localStorage.isPushEnabled) {
         this.unsubscribe()
