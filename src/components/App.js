@@ -5,6 +5,10 @@ import Quote from './Quote'
 import Alert from './Alert'
 import Controls from './Controls'
 import axios from 'axios'
+import {
+  install,
+  notify
+} from '../js/Worker'
 
 const initialState = {
   data        : [],
@@ -37,6 +41,8 @@ class App extends React.Component {
   }
 
   componentWillMount = () => this.run()
+
+  componentDidMount = () => install()
 
   componentDidUpdate = () => this.save()
 
@@ -113,6 +119,7 @@ class App extends React.Component {
         })
       } else {
         const { data, wordCount } = this.state
+        notify('New word!', `${author} played "${word}"`)
         data.push({
           author : author,
           id     : response.data.err,
