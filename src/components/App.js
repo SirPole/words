@@ -71,9 +71,6 @@ class App extends React.Component {
       }
     }).then(response => {
       if (this.state.wordCount !== response.data.wordCount) {
-        // TODO Sync button
-        // TODO Logout button
-        // TODO Throw error
         // TODO download only new words
         this.init()
       }
