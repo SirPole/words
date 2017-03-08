@@ -1,11 +1,13 @@
 'use strict'
 
+var __CACHENAME__ = 'Words-v1.1.0'
+
 this.addEventListener('activate', function (event) {
   if (clients.claim) {
     event.waitUntil(clients.claim())
   }
   var cacheWhitelist = [
-    'Words-v1'
+    __CACHENAME__
   ]
   event.waitUntil(caches.keys().then(function (cacheNames) {
     return Promise.all(cacheNames.map(function (cacheName) {
@@ -17,27 +19,22 @@ this.addEventListener('activate', function (event) {
 })
 
 this.addEventListener('install', function (event) {
-  event.waitUntil(
-    caches.open('Words-v1').then(function (cache) {
-      cache.addAll([
-        '/',
-        '/auth',
-        '/build/assets/css/bundle.css',
-        '/build/assets/fonts/woff2.css',
-        '/src/js/jquery.min.js',
-        '/src/js/tether.min.js',
-        '/src/js/bootstrap.min.js',
-        '/build/bundle.js',
-        '/favicon.png',
-        '/app192.png',
-        '/app144.png',
-        '/app96.png',
-        '/app48.png',
-        '/index.html',
-        '/manifest.json'
-      ])
-    })
-  )
+  event.waitUntil(caches.open(__CACHENAME__).then(function (cache) {
+    cache.addAll([
+      '/',
+      '/auth',
+      '/build/assets/css/bundle.css',
+      '/build/assets/fonts/woff2.css',
+      '/src/js/jquery.min.js',
+      '/src/js/tether.min.js',
+      '/src/js/bootstrap.min.js',
+      '/build/bundle.js',
+      '/favicon.png',
+      '/app192.png',
+      '/index.html',
+      '/manifest.json'
+    ])
+  }))
 })
 
 this.addEventListener('fetch', function (event) {
@@ -51,7 +48,7 @@ this.addEventListener('fetch', function (event) {
         return response
       }
       var responseToCache = response.clone()
-      caches.open('Words-v1').then(function (cache) {
+      caches.open(__CACHENAME__).then(function (cache) {
         if (event.request.method !== 'HEAD') {
           cache.put(event.request, responseToCache)
         }
@@ -59,30 +56,6 @@ this.addEventListener('fetch', function (event) {
       return response
     })
   }))
-})
-
-this.addEventListener('push', function (event) {
-  event.waitUntil(
-    fetch('https://api.brychta.name?what=last').then(function (response) {
-      if (response.status !== 200) {
-        console.error('Looks like there was a problem. Status Code: ' + response.status)
-        throw new Error()
-      }
-      return response.json().then(function (data) {
-        if (!data.lastWord) {
-          console.error('The API returned an error.', data.error)
-          throw new Error()
-        }
-        return self.registration.showNotification('Words', {
-          body : data.lastWord,
-          icon : 'app192.png',
-          tag  : 'tag'
-        })
-      })
-    }).catch(function (err) {
-      console.error('Unable to retrieve data', err)
-    })
-  )
 })
 
 this.addEventListener('notificationclick', function (event) {
@@ -94,12 +67,10 @@ function handleNotificationClick (event) {
   if (!clients.matchAll) {
     clients.matchAll = clients.getAll
   }
-  // Enumerate windows, and call window.focus(), or open a new one.
   return clients.matchAll({
     type                : 'window',
     includeUncontrolled : true
   }).catch(function (ex) {
-    // Chrome doesn't yet support includeUncontrolled:true crbug.com/455241
     if (ex.name !== 'NotSupportedError') {
       throw ex
     }
