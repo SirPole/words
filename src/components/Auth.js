@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'
 import LoginForm from './LoginForm'
 import axios from 'axios'
+import { install } from '../js/Worker'
 
 class Auth extends React.Component {
   static propTypes = {
@@ -20,6 +21,8 @@ class Auth extends React.Component {
   }
 
   componentWillMount = () => this.check()
+
+  componentDidMount = () => install()
 
   check = () => {
     Auth.isLoggedIn(status => {
@@ -54,6 +57,7 @@ class Auth extends React.Component {
     return (
       <div className='centered'>
         <LoginForm login={this.login} />
+        <button className='js-push-button btn btn-primary btn-outline hidden' disabled>Enable Push Messages</button>
       </div>
     )
   }
