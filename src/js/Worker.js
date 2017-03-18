@@ -24,23 +24,13 @@ const install = () => {
 
 const notify = (title, body) => {
   if (localStorage.isNotifiable) {
-    const icon = 'app192.png'
-    const tag  = 'tag'
-    if (navigator.userAgent.indexOf('Android') >= 0) {
-      navigator.serviceWorker.ready.then(reg => {
-        reg.showNotification(title, {
-          body : body,
-          icon : icon,
-          tag  : tag
-        })
-      })
-    } else {
-      new Notification(title, {
+    navigator.serviceWorker.ready.then(reg => {
+      reg.showNotification(title, {
         body : body,
-        icon : icon,
-        tag  : tag
+        icon : 'app192.png',
+        tag  : 'tag'
       })
-    }
+    })
   }
 }
 
