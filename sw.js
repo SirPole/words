@@ -1,6 +1,6 @@
 'use strict'
 
-var __CACHENAME__ = 'Words-v1.1.0'
+var __CACHENAME__ = 'Words-v1.1.2'
 
 this.addEventListener('activate', function (event) {
   if (clients.claim) {
