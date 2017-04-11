@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import Words from './Words'
 import Form from './Form'
 import Quote from './Quote'

@@ -1,7 +1,8 @@
-import React, { PropTypes } from 'react'
-import LoginForm from './LoginForm'
 import axios from 'axios'
+import PropTypes from 'prop-types'
+import React from 'react'
 import { install } from '../js/Worker'
+import LoginForm from './LoginForm'
 
 class Auth extends React.Component {
   static propTypes = {
