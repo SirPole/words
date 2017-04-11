@@ -1,0 +1,25 @@
+stages:
+ - test
+ - deploy
+
+test:
+  stage: test
+  script:
+    - npm test
+
+deploy:
+  stage: deploy
+  environment:
+    name: production
+    url: https://words.brychta.name/
+  only:
+    - master
+  script:
+    - npm build
+#    - 'which ssh-agent || (apt-get update -y && apt-get install openssh-client -y)'
+#    - eval $(ssh-agent -s)
+#    - ssh-add <(echo "$MAB_SSH_KEY")
+#    - mkdir -p ~/.ssh
+#    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+#    - 'rsync -aue ssh . antstudio.eu@antstudio.eu:/data/www/domeny/antstudio.eu/newton'
+#    - ssh antstudio.eu@antstudio.eu "cd /data/www/domeny/antstudio.eu/newton && npm start"
